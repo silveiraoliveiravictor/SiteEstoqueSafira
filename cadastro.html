@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Cantina Escolar</title>
+    <link rel="stylesheet" href="cadastro-style.css">
+</head>
+<body class="cadastro-body">
+    
+    <div class="cadastro-card">
+        <div class="cadastro-header">
+            <h2>CANTINA ESCOLAR</h2>
+            <P>CRIAR NOVA CONTA DE ADMINISTRADOR</P>
+    </div>
+
+    <form id="cadastroForm" action="cadastrar.php" method="POST">
+        <div class="form-group">
+            <label for="nome">Nome Completo</label>
+            <input type="text" id="nome" name="nome" placeholder="Ex: João Pereira" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">E-mail Corporativo</label>
+            <input type="email" id="email" name="email" placeholder="joao@cantina.com" required>
+        </div>
+
+        <div class="form-group">
+            <label for="cargo">Cargo / Função</label>
+            <select id="cargo" name="cargo">
+                <option value="Operador">Operador de Caixa</option>
+                <option value="Administrador">Administrador</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="senha">Senha de acesso</label>
+            <input type="password" id="senha" name="senha" placeholder="Mínimo 6 caracteres" required>
+        </div>
+
+        <button type="submit" class="btn-cadastro">Cadastrar Operador</button>
+
+        <div class="login-link">
+            Já tem uma conta? <a href="login.html">Fazer Login</a>
+        </div>
+    </form>
+</body>
+</html>
