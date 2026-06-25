@@ -14,35 +14,54 @@
             <P>CRIAR NOVA CONTA DE ADMINISTRADOR</P>
     </div>
 
-    <form id="cadastroForm" action="cadastrar.php" method="POST">
+    <form id="cadastroForm">
         <div class="form-group">
             <label for="nome">Nome Completo</label>
-            <input type="text" id="nome" name="nome" placeholder="Ex: João Pereira" required>
+            <input type="text" id="nome" placeholder="Ex: João Pereira" required>
         </div>
-
+    
         <div class="form-group">
             <label for="email">E-mail Corporativo</label>
-            <input type="email" id="email" name="email" placeholder="joao@cantina.com" required>
+            <input type="email" id="email" placeholder="joao@cantina.com" required>
         </div>
-
+    
         <div class="form-group">
             <label for="cargo">Cargo / Função</label>
-            <select id="cargo" name="cargo">
+            <select id="cargo">
                 <option value="Operador">Operador de Caixa</option>
                 <option value="Administrador">Administrador</option>
             </select>
         </div>
-
+    
         <div class="form-group">
-            <label for="senha">Senha de acesso</label>
-            <input type="password" id="senha" name="senha" placeholder="Mínimo 6 caracteres" required>
+            <label for="senha">Senha de Acesso</label>
+            <input type="password" id="senha" placeholder="Mínimo 6 caracteres" required>
         </div>
-
+    
         <button type="submit" class="btn-cadastro">Cadastrar Operador</button>
-
+        
         <div class="login-link">
             Já tem uma conta? <a href="login.html">Fazer Login</a>
         </div>
     </form>
+
+    <script>
+        document.getElementById('cadastroForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const cargo = document.getElementById('cargo').value;
+            const senha = document.getElementById('senha').value;
+
+            const novoUsuario = { nome, email, cargo, senha };
+            
+            localStorage.setItem('usuarioCadastrado', JSON.stringify(novoUsuario));
+
+            alert('Usuário cadastrado com sucesso! Redirecionando para o login...');
+            window.location.href = 'login.html';
+        });
+    </script>
+
 </body>
 </html>

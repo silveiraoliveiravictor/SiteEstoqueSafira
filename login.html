@@ -35,15 +35,20 @@
         function validarLogin(event) {
             event.preventDefault();
             
-            const email = document.getElementById('email').value;
-            const senha = document.getElementById('senha').value;
+            const emailDigitado = document.getElementById('email').value;
+            const senhaDigitada = document.getElementById('senha').value;
             const erro = document.getElementById('erro');
 
-            if (email === 'ana@cantina.com' && senha === '123456') {
+            const usuarioSalvo = JSON.parse(localStorage.getItem('usuarioCadastrado'));
+
+            const ehUsuarioFixo = (emailDigitado === 'ana@cantina.com' && senhaDigitada === '123456');
+            const ehUsuarioCadastrado = (usuarioSalvo && emailDigitado === usuarioSalvo.email && senhaDigitada === usuarioSalvo.senha);
+
+            if (ehUsuarioFixo || ehUsuarioCadastrado) {
                 erro.style.display = 'none';
-                window.location.href = 'index.html';
+                window.location.href = 'index.html'; 
             } else {
-                erro.style.display = 'block';
+                erro.style.display = 'block'; 
             }
         }
     </script>
