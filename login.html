@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Cantina Escolar</title>
+    <link rel="stylesheet" href="login-style.css">
+</head>
+<body class="login-body">
+
+    <div class="login-card">
+        <div class="login-header">
+            <h2>CANTINA ESCOLAR</h2>
+            <p>Controle de Estoque • Painel de Acesso</p>
+        </div>
+
+        <form id="loginForm" onsubmit="validarLogin(event)">
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" placeholder="ana@cantina.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn-login">Entrar no Sistema</button>
+            
+            <div id="erro" class="error-message">E-mail ou senha incorretos!</div>
+        </form>
+    </div>
+
+    <script>
+        function validarLogin(event) {
+            event.preventDefault();
+            
+            const emailDigitado = document.getElementById('email').value;
+            const senhaDigitada = document.getElementById('senha').value;
+            const erro = document.getElementById('erro');
+
+            const usuarioSalvo = JSON.parse(localStorage.getItem('usuarioCadastrado'));
+
+            const ehUsuarioFixo = (emailDigitado === 'ana@cantina.com' && senhaDigitada === '123456');
+            const ehUsuarioCadastrado = (usuarioSalvo && emailDigitado === usuarioSalvo.email && senhaDigitada === usuarioSalvo.senha);
+
+            if (ehUsuarioFixo || ehUsuarioCadastrado) {
+                erro.style.display = 'none';
+                window.location.href = 'index.html'; 
+            } else {
+                erro.style.display = 'block'; 
+            }
+        }
+    </script>
+</body>
+</html>

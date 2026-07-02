@@ -1,0 +1,293 @@
+/* --- VARIÁVEIS DE CORES DO FIGMA --- */
+:root {
+    --bg-principal: #f4f6f9;
+    --sidebar-azul: #1e325c;
+    --sidebar-ativo: #2a437e;
+    --azul-destaque: #007bff;
+    --texto-escuro: #333333;
+    --texto-mutado: #777777;
+    --branco: #ffffff;
+    --border-color: #e0e4ec;
+    
+    --status-ok: #28a745;
+    --status-ok-bg: #d4edda;
+    --status-baixo: #ffc107;
+    --status-baixo-bg: #fff3cd;
+    --status-critico: #dc3545;
+    --status-critico-bg: #f8d7da;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-principal);
+    color: var(--texto-escuro);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* --- SIDEBAR LATERAL --- */
+.sidebar {
+    width: 260px;
+    background-color: var(--sidebar-azul);
+    color: var(--branco);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+}
+
+.brand {
+    padding: 10px 24px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.brand span {
+    font-size: 0.8rem;
+    display: block;
+    opacity: 0.7;
+    font-weight: normal;
+}
+
+.menu-nav {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.menu-nav a {
+    display: block;
+    padding: 14px 24px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    border-left: 4px solid transparent;
+}
+
+.menu-nav a:hover {
+    background-color: rgba(255,255,255,0.05);
+    color: var(--branco);
+}
+
+/* --- CONTAINER PRINCIPAL --- */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+/* TOPO / HEADER */
+.header {
+    background-color: var(--branco);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header-title h2 {
+    font-size: 1.4rem;
+    color: var(--sidebar-azul);
+}
+.header-title p {
+    font-size: 0.85rem;
+    color: var(--texto-mutado);
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar {
+    width: 38px;
+    height: 38px;
+    background-color: var(--azul-destaque);
+    color: var(--branco);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.user-info p {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+.user-info span {
+    font-size: 0.75rem;
+    color: var(--texto-mutado);
+    display: block;
+}
+
+/* --- NAVEGAÇÃO INTERNA DINÂMICA (APENAS COM CSS) --- */
+.view-section {
+    display: none; 
+    padding: 30px;
+}
+
+
+#painel:target, #estoque:target, #entradas:target, #saidas:target, #relatorios:target, #config:target {
+    display: block;
+}
+
+.view-section:first-of-type {
+    display: block;
+}
+#painel:target ~ .view-section:first-of-type { display: none; }
+
+/* --- COMPONENTES: CARDS DO DASHBOARD --- */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background-color: var(--branco);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.card .card-label {
+    font-size: 0.85rem;
+    color: var(--texto-mutado);
+    font-weight: 500;
+}
+
+.card .card-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--sidebar-azul);
+}
+
+.card .card-subtext {
+    font-size: 0.75rem;
+    color: var(--texto-mutado);
+}
+
+/* --- ESTILIZAÇÃO DE TABELAS --- */
+.table-container {
+    background-color: var(--branco);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.table-header-actions {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.btn {
+    background-color: var(--azul-destaque);
+    color: var(--branco);
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.btn-success { background-color: var(--status-ok); }
+.btn-danger { background-color: var(--status-critico); }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+th, td {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+th {
+    background-color: #f8f9fa;
+    color: var(--texto-mutado);
+    font-weight: 600;
+}
+
+/* --- BADGES E STATUS --- */
+.badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
+.badge-ok { background-color: var(--status-ok-bg); color: var(--status-ok); }
+.badge-baixo { background-color: var(--status-baixo-bg); color: var(--status-baixo); }
+.badge-critico { background-color: var(--status-critico-bg); color: var(--status-critico); }
+
+.badge-entrada { background-color: #e2f6ec; color: #157347; }
+.badge-saida { background-color: #fce8e6; color: #c92a2a; }
+
+/* --- GRÁFICOS ESTATÍSTICOS --- */
+.charts-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+.chart-box {
+    background: var(--branco);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+.bar-chart-mock {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 200px;
+    padding-top: 20px;
+    border-bottom: 2px solid var(--border-color);
+}
+.bar-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+.bar {
+    width: 35px;
+    background-color: #dc3545;
+    border-radius: 4px 4px 0 0;
+    transition: height 0.3s;
+}
+.bar-label {
+    font-size: 0.8rem;
+    color: var(--texto-mutado);
+    margin-top: 8px;
+}

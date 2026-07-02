@@ -1,0 +1,103 @@
+/* --- PALETA DE CORES DO FIGMA --- */
+:root {
+    --bg-azul-escuro: #1e325c;
+    --azul-destaque: #007bff;
+    --texto-escuro: #333333;
+    --texto-mutado: #777777;
+    --branco: #ffffff;
+    --border-color: #e0e4ec;
+    --status-critico: #dc3545;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.login-body {
+    background-color: var(--bg-azul-escuro);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+.login-card {
+    background-color: var(--branco);
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header h2 {
+    color: var(--bg-azul-escuro);
+    font-size: 1.6rem;
+    margin-bottom: 5px;
+    letter-spacing: 0.5px;
+}
+
+.login-header p {
+    color: var(--texto-mutado);
+    font-size: 0.9rem;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--texto-escuro);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+    border-color: var(--azul-destaque);
+}
+
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--azul-destaque);
+    color: var(--branco);
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-login:hover {
+    background-color: #0056b3;
+}
+
+.error-message {
+    color: var(--status-critico);
+    font-size: 0.85rem;
+    margin-top: 15px;
+    text-align: center;
+    display: none;
+}
