@@ -78,7 +78,7 @@
                             <th>Usuário</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tbody-recente">
                         <tr>
                             <td>Arroz Branco 5kg</td>
                             <td><span class="badge badge-entrada">Entrada</span></td>
@@ -123,7 +123,7 @@
                             <th>Fornecedor</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tbody-estoque">
                         <tr>
                             <td>Arroz Branco 5kg</td>
                             <td>Alimento</td>
@@ -159,7 +159,7 @@
         <section id="entradas" class="view-section">
             <div class="table-header-actions">
                 <h3>Histórico de Entradas</h3>
-                <a href="#" class="btn btn-success">+ Registrar Entrada</a>
+                <a href="#" id="btn-registrar-entrada" class="btn btn-success">+ Registrar Entrada</a>
             </div>
             <div class="table-container">
                 <table>
@@ -173,7 +173,7 @@
                             <th>Nota Fiscal</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tbody-entradas">
                         <tr>
                             <td>Arroz Branco 5kg</td>
                             <td>Alimento</td>
@@ -198,7 +198,7 @@
         <section id="saidas" class="view-section">
             <div class="table-header-actions">
                 <h3>Histórico de Saídas e Vendas</h3>
-                <a href="#" class="btn btn-danger">+ Registrar Saída</a>
+                <a href="#" id="btn-registrar-saida" class="btn btn-danger">+ Registrar Saída</a>
             </div>
             <div class="table-container">
                 <table>
@@ -212,7 +212,7 @@
                             <th>Valor Total</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tbody-saidas">
                         <tr>
                             <td>Feijão Preto 1kg</td>
                             <td>Alimento</td>
@@ -239,13 +239,11 @@
             <div class="charts-container">
                 <div class="chart-box">
                     <h4>Movimentação Semanal (Saídas)</h4>
-                    <div class="bar-chart-mock">
-                        <div class="bar-group"><div class="bar" style="height: 120px;"></div><div class="bar-label">Seg</div></div>
-                        <div class="bar-group"><div class="bar" style="height: 160px;"></div><div class="bar-label">Ter</div></div>
-                        <div class="bar-group"><div class="bar" style="height: 90px;"></div><div class="bar-label">Qua</div></div>
-                        <div class="bar-group"><div class="bar" style="height: 190px;"></div><div class="bar-label">Qui</div></div>
-                        <div class="bar-group"><div class="bar" style="height: 140px;"></div><div class="bar-label">Sex</div></div>
+            
+                    <div class="chart-container" style="position: relative; height:280px; width:100%">
+                     <canvas id="graficoSemanalSaidas"></canvas>
                     </div>
+            
                 </div>
             </div>
         </section>
@@ -305,6 +303,67 @@
         </div>
     </div>
 
+    <div id="modal-entrada" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Registrar Entrada de Estoque</h3>
+                <button id="btn-fechar-entrada" class="btn-close">&times;</button>
+            </div>
+            
+            <form id="form-entrada">
+                <div class="form-group">
+                    <label for="ent-produto">Selecione o Produto</label>
+                    <select id="ent-produto" required>
+                        </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ent-qtd">Quantidade que Chegou</label>
+                        <input type="number" id="ent-qtd" min="1" placeholder="Ex: 20" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ent-nf">Nota Fiscal (Opcional)</label>
+                        <input type="text" id="ent-nf" placeholder="Ex: NF-5542">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success" style="width: 100%; margin-top: 10px; padding: 12px;">Confirmar Entrada</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-saida" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Registrar Saída / Venda</h3>
+                <button id="btn-fechar-saida" class="btn-close">&times;</button>
+            </div>
+            
+            <form id="form-saida">
+                <div class="form-group">
+                    <label for="sai-produto">Selecione o Produto</label>
+                    <select id="sai-produto" required>
+                        </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sai-qtd">Quantidade Retirada</label>
+                        <input type="number" id="sai-qtd" min="1" placeholder="Ex: 5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sai-info">Valor Total ou Justificativa</label>
+                        <input type="text" id="sai-info" placeholder="Ex: R$ 15,00 ou Consumo Interno" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-danger" style="width: 100%; margin-top: 10px; padding: 12px;">Confirmar Saída</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="main.js"></script>
     
 </body>
