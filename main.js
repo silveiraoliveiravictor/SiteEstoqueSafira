@@ -84,7 +84,7 @@
         formProduto.addEventListener('submit', function(event) {
             event.preventDefault();
             
-            // Só um aviso para sabermos que funcionou, antes de salvar no localStorage
+            // Só um aviso para sabermos que funcionou, antes de salvar no localStorage 
             alert('Produto capturado com sucesso! Pronto para salvar no estoque.');
             
             formProduto.reset(); // Limpa os campos

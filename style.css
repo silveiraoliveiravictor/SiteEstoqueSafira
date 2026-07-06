@@ -292,7 +292,7 @@ th {
     margin-top: 8px;
 }
 
-/* Estilização do modal*/
+/* Estilização do modal (pode ser alterada)*/
 .modal-overlay{
     position: fixed;
     top: 0;
