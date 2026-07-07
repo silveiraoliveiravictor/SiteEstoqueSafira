@@ -44,26 +44,29 @@
 
         <section id="painel" class="view-section">
             <div class="cards-grid">
-                <div class="card">
-                    <span class="card-label">Total de Itens</span>
-                    <span class="card-value">247</span>
-                    <span class="card-subtext">23 categorias</span>
-                </div>
-                <div class="card">
-                    <span class="card-label">Estoque Baixo</span>
-                    <span class="card-value" style="color: var(--status-baixo);">12</span>
-                    <span class="card-subtext">Reposição urgente</span>
-                </div>
-                <div class="card">
-                    <span class="card-label">Próx. Vencimentos</span>
-                    <span class="card-value" style="color: var(--status-critico);">8</span>
-                    <span class="card-subtext">Nos próximos 7 dias</span>
-                </div>
-                <div class="card">
-                    <span class="card-label">Movimentação Semanal</span>
-                    <span class="card-value">134</span>
-                    <span class="card-subtext" style="color: var(--status-ok);">+18% vs semana anterior</span>
-                </div>
+                    <div class="card">
+                        <p class="card-title">Total de Itens</p>
+                        <p class="card-value" id="dash-total-itens">0</p>
+                        <span class="card-subtext" id="dash-total-categorias">0 categorias</span>
+                    </div>
+
+                    <div class="card">
+                        <p class="card-title">Estoque Baixo</p>
+                        <p class="card-value" id="dash-estoque-baixo">0</p>
+                        <span class="card-subtext">Reposição urgente</span>
+                    </div>
+
+                    <div class="card">
+                        <p class="card-title">Próx. Vencimentos</p>
+                        <p class="card-value" id="dash-prox-vencimentos">0</p>
+                        <span class="card-subtext">Nos próximos 7 dias</span>
+                    </div>
+
+                    <div class="card">
+                        <p class="card-title">Movimentação Semanal</p>
+                        <p class="card-value" id="dash-mov-semanal">0</p>
+                        <span class="card-subtext" id="dash-mov-feedback">itens movimentados</span>
+                    </div>
             </div>
 
             <h3>Movimentação Recente do Estoque</h3>
@@ -121,6 +124,7 @@
                             <th>Status</th>
                             <th>Validade</th>
                             <th>Fornecedor</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-estoque">

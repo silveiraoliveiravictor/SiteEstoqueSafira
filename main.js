@@ -95,19 +95,80 @@ document.addEventListener("DOMContentLoaded", function() {
         // ---- RECALCULAR CARDS DO DASHBOARD ----
         let totalItens = 0;
         let estoqueBaixoContador = 0;
+        let proximosVencimentosContador = 0;
+        let movimentacaoSemanalContador = 0;
+        
+        // Set para contar quantas categorias únicas existem no sistema
+        const categoriasUnicas = new Set();
+        
+        // Configura as datas para descobrir o que vence nos próximos 7 dias
+        const hoje = new Date();
+        const daquiA7Dias = new Date();
+        daquiA7Dias.setDate(hoje.getDate() + 7);
 
+        // 1. Processa os dados dos Produtos
         produtos.forEach(p => {
             totalItens += Number(p.qtd);
+            
+            // Valida estoque baixo
             if (Number(p.qtd) < Number(p.minimo)) {
                 estoqueBaixoContador++;
             }
+            
+            // Guarda a categoria (evita duplicados automaticamente no Set)
+            if (p.categoria) {
+                categoriasUnicas.add(p.categoria.trim());
+            }
+            
+            // Valida vencimento nos próximos 7 dias (p.validade está em formato YYYY-MM-DD)
+            if (p.validade) {
+                const dataValidade = new Date(p.validade + 'T00:00:00');
+                if (dataValidade >= hoje && dataValidade <= daquiA7Dias) {
+                    proximosVencimentosContador++;
+                }
+            }
         });
+
+        // 2. Processa as Movimentações dos últimos 7 dias
+        movimentacoes.forEach(m => {
+            try {
+                // Converte a string "dd/mm/aaaa hh:mm" para um objeto Date
+                const partesData = m.data.split(' ')[0].split('/');
+                const dataMovimentacao = new Date(partesData[2], partesData[1] - 1, partesData[0]);
+                
+                // Calcula a diferença em dias entre hoje e a data da movimentação
+                const diferencaTempo = hoje - dataMovimentacao;
+                const diferencaDias = Math.ceil(diferencaTempo / (1000 * 60 * 60 * 24));
+                
+                // Se aconteceu na última semana, soma a quantidade ao fluxo
+                if (diferencaDias >= 0 && diferencaDias <= 7) {
+                    movimentacaoSemanalContador += Number(m.qtd);
+                }
+            } catch (error) {
+                // Impede que formatos de data corrompidos parem o sistema
+            }
+        });
+
+        // 3. Aplica os valores reais calculados diretamente na tela
+        const elTotalItens = document.getElementById('dash-total-itens');
+        const elTotalCategorias = document.getElementById('dash-total-categorias');
+        const elEstoqueBaixo = document.getElementById('dash-estoque-baixo');
+        const elProxVencimentos = document.getElementById('dash-prox-vencimentos');
+        const elMovSemanal = document.getElementById('dash-mov-semanal');
+
+        if (elTotalItens) elTotalItens.textContent = totalItens;
+        if (elTotalCategorias) elTotalCategorias.textContent = `${categoriasUnicas.size} categorias`;
+        if (elEstoqueBaixo) elEstoqueBaixo.textContent = estoqueBaixoContador;
+        if (elProxVencimentos) elProxVencimentos.textContent = proximosVencimentosContador;
+        if (elMovSemanal) elMovSemanal.textContent = movimentacaoSemanalContador;
+        // -------------------------------------------------------------
 
         const cardTotal = document.querySelectorAll('.card-value')[0];
         const cardBaixo = document.querySelectorAll('.card-value')[1];
         if (cardTotal) cardTotal.textContent = totalItens;
         if (cardBaixo) cardBaixo.textContent = estoqueBaixoContador;
 
+        
         // ---- TABELA: ESTOQUE ATUAL ----
         const tbodyEstoque = document.getElementById('tbody-estoque');
         if (tbodyEstoque) {
@@ -126,6 +187,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 const dataBr = p.validade.split('-').reverse().join('/');
 
+                // Adicionamos a célula do botão no final do HTML da linha (tr)
                 tbodyEstoque.innerHTML += `
                     <tr>
                         <td><strong>${p.nome}</strong></td>
@@ -135,8 +197,23 @@ document.addEventListener("DOMContentLoaded", function() {
                         <td><span class="badge ${badgeClass}">${statusTexto}</span></td>
                         <td>${dataBr}</td>
                         <td>${p.fornecedor}</td>
+                        <td>
+                            <button class="btn-excluir" data-nome="${p.nome}" style="background: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">
+                                Excluir
+                            </button>
+                        </td>
                     </tr>
                 `;
+            });
+
+            // ---- ATIVAR OS BOTÕES DE EXCLUSÃO ----
+            // Criamos o evento de clique para cada botão que acabou de ser desenhado na tela
+            const botoesExcluir = tbodyEstoque.querySelectorAll('.btn-excluir');
+            botoesExcluir.forEach(botao => {
+                botao.addEventListener('click', function() {
+                    const nomeProduto = this.getAttribute('data-nome');
+                    excluirProduto(nomeProduto);
+                });
             });
         }
 
@@ -280,6 +357,28 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         }
     }
+
+    // ---- FUNÇÃO PARA EXCLUIR UM PRODUTO DO SISTEMA ----
+    function excluirProduto(nome) {
+        // Exibe uma caixinha de confirmação para o usuário não deletar sem querer
+        const confirmar = confirm(`Tem certeza que deseja remover o produto "${nome}" do estoque definitivamente?`);
+        
+        if (confirmar) {
+            // 1. Pega a lista atual de produtos do LocalStorage
+            let produtos = JSON.parse(localStorage.getItem('produtos')) || [];
+            
+            // 2. Filtra a lista, gerando uma nova cópia SEM o produto deletado
+            produtos = produtos.filter(p => p.nome !== nome);
+            
+            // 3. Salva de volta a lista atualizada no LocalStorage
+            localStorage.setItem('produtos', JSON.stringify(produtos));
+            
+            // 4. Avisa o usuário e manda o sistema redesenhar a tela inteira com os novos números
+            alert(`Produto "${nome}" foi removido com sucesso!`);
+            renderizarSistema();
+        }
+    }
+    
 
     // Inicializa a montagem das tabelas e gráficos na tela
     renderizarSistema();
