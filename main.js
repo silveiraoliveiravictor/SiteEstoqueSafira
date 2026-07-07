@@ -46,26 +46,169 @@ document.addEventListener("DOMContentLoaded", function() {
     // Configurações dinâmicas baseadas no cargo do usuário
     const configSection = document.getElementById('config');
     if (configSection) {
+        // Carrega configurações salvas ou define um padrão inicial caso não existam
+        if (!localStorage.getItem('configuracoesSistema')) {
+            const configPadrao = {
+                notificacoesCriticas: true,
+                exigirNF: false,
+                limiteDiasVencimento: 7,
+                temaEscuro: false
+            };
+            localStorage.setItem('configuracoesSistema', JSON.stringify(configPadrao));
+        }
+        
+        const configsAtuais = JSON.parse(localStorage.getItem('configuracoesSistema'));
+
         if (usuarioLogado.cargo === 'Administrador') {
             configSection.innerHTML = `
-                <h3>Configurações do Sistema (Administrador)</h3>
-                <div style="background: white; padding: 20px; border-radius: 8px; margin-top: 15px; border: 1px solid var(--border-color);">
-                    <p style="margin-bottom: 10px;"><label><input type="checkbox" checked> Permitir notificações de estoque crítico</label></p>
-                    <p style="margin-bottom: 15px;"><label><input type="checkbox"> Exigir aprovação de notas fiscais</label></p>
-                    <button class="btn">Salvar Diretrizes</button>
+                <div class="config-header">
+                    <h3>Painel de Diretrizes e Segurança</h3>
+                    <p class="section-subtitle">Gestão de políticas globais da cantina • Nível Administrador</p>
+                </div>
+                
+                <div class="config-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                    
+                    <div class="config-card" style="background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <h4 style="margin-bottom: 15px; color: #1e3a8a; display: flex; align-items: center; gap: 8px;">⚙️ Parâmetros do Sistema</h4>
+                            <div style="margin-bottom: 12px;">
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                    <input type="checkbox" id="cfg-notificacoes" ${configsAtuais.notificacoesCriticas ? 'checked' : ''}>
+                                    <span>Alertas de Estoque Crítico</span>
+                                </label>
+                                <small style="display: block; color: #64748b; margin-left: 24px;">Ativa avisos visuais vermelhos na listagem principal.</small>
+                            </div>
+                            <div style="margin-bottom: 12px;">
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                    <input type="checkbox" id="cfg-nf" ${configsAtuais.exigirNF ? 'checked' : ''}>
+                                    <span>Obrigatoriedade de Nota Fiscal</span>
+                                </label>
+                                <small style="display: block; color: #64748b; margin-left: 24px;">Bloqueia entradas de mercadoria sem código identificador.</small>
+                            </div>
+                            <div style="margin-bottom: 12px;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 500;">Margem de Alerta de Vencimento (Dias):</label>
+                                <input type="number" id="cfg-dias-venc" value="${configsAtuais.limiteDiasVencimento || 7}" min="1" max="90" style="width: 80px; padding: 5px; border-radius: 4px; border: 1px solid var(--border-color);">
+                            </div>
+                        </div>
+                        <button id="btn-salvar-diretrizes" class="btn" style="width: 100%; margin-top: 15px;">Salvar Diretrizes</button>
+                    </div>
+
+                    <div class="config-card" style="background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <h4 style="margin-bottom: 15px; color: #b91c1c;">💾 Banco de Dados Local (LocalStorage)</h4>
+                            <p style="font-size: 13px; color: #475569; margin-bottom: 15px;">Gerenciamento de segurança dos registros internos armazenados no navegador.</p>
+                            
+                            <button id="btn-exportar-json" class="btn" style="background: #10b981; margin-bottom: 10px; width: 100%;">📥 Exportar Backup do Sistema (JSON)</button>
+                            <button id="btn-limpar-historico" class="btn" style="background: #ef4444; width: 100%;">⚠️ Limpar Histórico de Movimentações</button>
+                        </div>
+                        <small style="color: #94a3b8; display: block; margin-top: 15px; text-align: center;">Última sincronização: Tempo Real</small>
+                    </div>
                 </div>
             `;
+
+            // LÓGICA DO BOTÃO: SALVAR DIRETRIZES
+            document.getElementById('btn-salvar-diretrizes').addEventListener('click', function() {
+                const novasConfigs = {
+                    notificacoesCriticas: document.getElementById('cfg-notificacoes').checked,
+                    exigirNF: document.getElementById('cfg-nf').checked,
+                    limiteDiasVencimento: Number(document.getElementById('cfg-dias-venc').value),
+                    temaEscuro: configsAtuais.temaEscuro
+                };
+                localStorage.setItem('configuracoesSistema', JSON.stringify(novasConfigs));
+                alert('Diretrizes globais de segurança atualizadas com sucesso!');
+                renderizarSistema(); // Recarrega os cards se a margem de dias mudou
+            });
+
+            // LÓGICA DO BOTÃO: EXPORTAR BACKUP (Isso aqui impressiona bancas)
+            document.getElementById('btn-exportar-json').addEventListener('click', function() {
+                const dadosBackup = {
+                    produtos: JSON.parse(localStorage.getItem('produtos')),
+                    movimentacoes: JSON.parse(localStorage.getItem('movimentacoes')),
+                    configuracoes: JSON.parse(localStorage.getItem('configuracoesSistema'))
+                };
+                
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dadosBackup, null, 2));
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.setAttribute("href", dataStr);
+                downloadAnchor.setAttribute("download", `backup_cantina_${new Date().toISOString().slice(0,10)}.json`);
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                downloadAnchor.remove();
+            });
+
+            // LÓGICA DO BOTÃO: LIMPAR HISTÓRICO
+            document.getElementById('btn-limpar-historico').addEventListener('click', function() {
+                if (confirm('ATENÇÃO: Deseja apagar permanentemente TODO o histórico de entradas e saídas? O saldo atual dos produtos não será alterado.')) {
+                    localStorage.setItem('movimentacoes', JSON.stringify([]));
+                    alert('Histórico de movimentações zerado!');
+                    renderizarSistema();
+                }
+            });
+
         } else {
+            // VIEW DO OPERADOR (Foco em dados do perfil e usabilidade)
             configSection.innerHTML = `
-                <h3>Configurações da Conta (Operador)</h3>
-                <div style="background: white; padding: 20px; border-radius: 8px; margin-top: 15px; border: 1px solid var(--border-color);">
-                    <p style="margin-bottom: 15px; color: var(--texto-mutado);">Olá, <strong>${usuarioLogado.nome}</strong>. Suas permissões permitem apenas alterações cadastrais.</p>
-                    <button class="btn">Alterar My Senha</button>
+                <div class="config-header">
+                    <h3>Configurações da Conta</h3>
+                    <p class="section-subtitle">Gerencie suas preferências de acesso e interface</p>
+                </div>
+                
+                <div class="config-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                    
+                    <div class="config-card" style="background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <h4 style="margin-bottom: 15px; color: #1e3a8a;">👤 Dados Cadastrais</h4>
+                        <div style="margin-bottom: 10px;">
+                            <label style="display:block; font-size:12px; font-weight:600; color:#64748b;">NOME COMPLETO</label>
+                            <input type="text" value="${usuarioLogado.nome}" disabled style="width:100%; padding:8px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:4px; color:#475569;">
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <label style="display:block; font-size:12px; font-weight:600; color:#64748b;">FUNÇÃO ATUAL</label>
+                            <input type="text" value="${usuarioLogado.cargo}" disabled style="width:100%; padding:8px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:4px; color:#475569;">
+                        </div>
+                        <p style="font-size:11px; color:#94a3b8; margin-top:10px;">ℹ️ Alterações no perfil cadastral devem ser solicitadas à administração do Colégio.</p>
+                    </div>
+
+                    <div class="config-card" style="background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <h4 style="margin-bottom: 15px; color: #1e3a8a;">🔒 Credenciais de Acesso</h4>
+                            <div style="margin-bottom: 10px;">
+                                <label style="display:block; font-size:13px; margin-bottom:4px;">Nova Senha:</label>
+                                <input type="password" id="op-nova-senha" placeholder="••••••••" style="width:100%; padding:6px; border:1px solid var(--border-color); border-radius:4px;">
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <label style="display:block; font-size:13px; margin-bottom:4px;">Confirme a Senha:</label>
+                                <input type="password" id="op-confirma-senha" placeholder="••••••••" style="width:100%; padding:6px; border:1px solid var(--border-color); border-radius:4px;">
+                            </div>
+                        </div>
+                        <button id="btn-atualizar-senha" class="btn" style="width:100%; margin-top:15px;">Atualizar Senha de Acesso</button>
+                    </div>
                 </div>
             `;
+
+            // LÓGICA DE ALTERAÇÃO DE SENHA MOCK (Com validação profissional)
+            document.getElementById('btn-atualizar-senha').addEventListener('click', function() {
+                const senha = document.getElementById('op-nova-senha').value;
+                const confirma = document.getElementById('op-confirma-senha').value;
+
+                if (!senha || !confirma) {
+                    alert('Por favor, preencha ambos os campos de senha.');
+                    return;
+                }
+                if (senha !== confirma) {
+                    alert('Erro: As senhas digitadas não coincidem.');
+                    return;
+                }
+                if (senha.length < 4) {
+                    alert('Por favor, defina uma senha segura com no mínimo 4 caracteres.');
+                    return;
+                }
+
+                alert('Senha alterada localmente com sucesso para esta sessão!');
+                document.getElementById('op-nova-senha').value = '';
+                document.getElementById('op-confirma-senha').value = '';
+            });
         }
     }
-
     // Lógica do botão de Logout
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
