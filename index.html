@@ -34,39 +34,39 @@
                 <p>Visão Geral do Sistema</p>
             </div>
             <div class="user-profile">
-                <div class="user-avatar">AS</div>
+                <div class="user-avatar">--</div>
                 <div class="user-info">
-                    <p>Ana Silva</p>
-                    <span>Administradora</span>
+                    <p>Carregando...</p>
+                    <span>...</span>
                 </div>
             </div>
         </header>
 
         <section id="painel" class="view-section">
             <div class="cards-grid">
-                    <div class="card">
-                        <p class="card-title">Total de Itens</p>
-                        <p class="card-value" id="dash-total-itens">0</p>
-                        <span class="card-subtext" id="dash-total-categorias">0 categorias</span>
-                    </div>
+                <div class="card">
+                    <p class="card-title">Total de Itens</p>
+                    <p class="card-value" id="dash-total-itens">0</p>
+                    <span class="card-subtext" id="dash-total-categorias">0 categorias</span>
+                </div>
 
-                    <div class="card">
-                        <p class="card-title">Estoque Baixo</p>
-                        <p class="card-value" id="dash-estoque-baixo">0</p>
-                        <span class="card-subtext">Reposição urgente</span>
-                    </div>
+                <div class="card">
+                    <p class="card-title">Estoque Baixo</p>
+                    <p class="card-value" id="dash-estoque-baixo">0</p>
+                    <span class="card-subtext">Reposição urgente</span>
+                </div>
 
-                    <div class="card">
-                        <p class="card-title">Próx. Vencimentos</p>
-                        <p class="card-value" id="dash-prox-vencimentos">0</p>
-                        <span class="card-subtext">Nos próximos 7 dias</span>
-                    </div>
+                <div class="card">
+                    <p class="card-title">Próx. Vencimentos</p>
+                    <p class="card-value" id="dash-prox-vencimentos">0</p>
+                    <span class="card-subtext">Margem de segurança</span>
+                </div>
 
-                    <div class="card">
-                        <p class="card-title">Movimentação Semanal</p>
-                        <p class="card-value" id="dash-mov-semanal">0</p>
-                        <span class="card-subtext" id="dash-mov-feedback">itens movimentados</span>
-                    </div>
+                <div class="card">
+                    <p class="card-title">Movimentação Semanal</p>
+                    <p class="card-value" id="dash-mov-semanal">0</p>
+                    <span class="card-subtext" id="dash-mov-feedback">itens movimentados</span>
+                </div>
             </div>
 
             <h3>Movimentação Recente do Estoque</h3>
@@ -82,27 +82,7 @@
                         </tr>
                     </thead>
                     <tbody id="tbody-recente">
-                        <tr>
-                            <td>Arroz Branco 5kg</td>
-                            <td><span class="badge badge-entrada">Entrada</span></td>
-                            <td>10</td>
-                            <td>11/06/2026 08:15</td>
-                            <td>Maria S.</td>
-                        </tr>
-                        <tr>
-                            <td>Feijão Preto 1kg</td>
-                            <td><span class="badge badge-saida">Saída</span></td>
-                            <td>5</td>
-                            <td>11/06/2026 09:30</td>
-                            <td>João P.</td>
-                        </tr>
-                        <tr>
-                            <td>Óleo de Soja 900ml</td>
-                            <td><span class="badge badge-entrada">Entrada</span></td>
-                            <td>12</td>
-                            <td>11/06/2026 10:00</td>
-                            <td>Maria S.</td>
-                        </tr>
+                        <!-- Gerado dinamicamente -->
                     </tbody>
                 </table>
             </div>
@@ -128,6 +108,7 @@
                         </tr>
                     </thead>
                     <tbody id="tbody-estoque">
+                        <!-- Gerado dinamicamente com botões Editar e Excluir -->
                     </tbody>
                 </table>
             </div>
@@ -151,22 +132,7 @@
                         </tr>
                     </thead>
                     <tbody id="tbody-entradas">
-                        <tr>
-                            <td>Arroz Branco 5kg</td>
-                            <td>Alimento</td>
-                            <td>10</td>
-                            <td>11/06/2026</td>
-                            <td>Maria S.</td>
-                            <td>NF-2341</td>
-                        </tr>
-                        <tr>
-                            <td>Leite Integral 1L</td>
-                            <td>Laticínio</td>
-                            <td>30</td>
-                            <td>10/06/2026</td>
-                            <td>Maria S.</td>
-                            <td>NF-2340</td>
-                        </tr>
+                        <!-- Gerado dinamicamente -->
                     </tbody>
                 </table>
             </div>
@@ -190,22 +156,7 @@
                         </tr>
                     </thead>
                     <tbody id="tbody-saidas">
-                        <tr>
-                            <td>Feijão Preto 1kg</td>
-                            <td>Alimento</td>
-                            <td>5</td>
-                            <td>11/06/2026</td>
-                            <td>João P.</td>
-                            <td>R$ 24,50</td>
-                        </tr>
-                        <tr>
-                            <td>Macarrão Espaguete</td>
-                            <td>Alimento</td>
-                            <td>8</td>
-                            <td>11/06/2026</td>
-                            <td>Carlos L.</td>
-                            <td>R$ 36,00</td>
-                        </tr>
+                        <!-- Gerado dinamicamente -->
                     </tbody>
                 </table>
             </div>
@@ -213,24 +164,28 @@
 
         <section id="relatorios" class="view-section">
             <h3>Gráficos Estatísticos Semanais</h3>
-            <div class="charts-container">
-                <div class="chart-box">
-                    <h4>Movimentação Semanal (Saídas)</h4>
-            
-                    <div class="chart-container" style="position: relative; height:280px; width:100%">
-                     <canvas id="graficoSemanalSaidas"></canvas>
+            <div class="charts-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin-top: 20px;">
+                <div class="chart-box" style="background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <h4>Níveis Atuais de Estoque</h4>
+                    <div style="position: relative; height:280px; width:100%">
+                        <canvas id="graficoEstoque"></canvas>
                     </div>
-            
+                </div>
+                <div class="chart-box" style="background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <h4>Movimentação Semanal (Saídas)</h4>
+                    <div style="position: relative; height:280px; width:100%">
+                        <canvas id="graficoSemanalSaidas"></canvas>
+                    </div>
                 </div>
             </div>
         </section>
 
         <section id="config" class="view-section">
-            <h3>Configurações do Sistema</h3>
-            <p style="margin-top:15px; color: var(--texto-mutado);">Configurações em breve...</p>
+            <!-- Renderizado dinamicamente via JS baseado no cargo do usuário -->
         </section>
     </main>
 
+    <!-- MODAL CADASTRO / EDIÇÃO -->
     <div id="modal-produto" class="modal-overlay">
         <div class="modal-card">
             <div class="modal-header">
@@ -239,6 +194,7 @@
             </div>
             
             <form id="form-produto">
+                <input type="hidden" id="edit-nome-original">
                 <div class="form-group">
                     <label for="prod-nome">Nome do Produto</label>
                     <input type="text" id="prod-nome" placeholder="Ex: Coca-Cola Lata 350ml" required>
@@ -280,20 +236,18 @@
         </div>
     </div>
 
+    <!-- MODAL ENTRADA -->
     <div id="modal-entrada" class="modal-overlay">
         <div class="modal-card">
             <div class="modal-header">
                 <h3>Registrar Entrada de Estoque</h3>
                 <button id="btn-fechar-entrada" class="btn-close">&times;</button>
             </div>
-            
             <form id="form-entrada">
                 <div class="form-group">
                     <label for="ent-produto">Selecione o Produto</label>
-                    <select id="ent-produto" required>
-                        </select>
+                    <select id="ent-produto" required></select>
                 </div>
-
                 <div class="form-row">
                     <div class="form-group">
                         <label for="ent-qtd">Quantidade que Chegou</label>
@@ -304,26 +258,23 @@
                         <input type="text" id="ent-nf" placeholder="Ex: NF-5542">
                     </div>
                 </div>
-
                 <button type="submit" class="btn btn-success" style="width: 100%; margin-top: 10px; padding: 12px;">Confirmar Entrada</button>
             </form>
         </div>
     </div>
 
+    <!-- MODAL SAÍDA -->
     <div id="modal-saida" class="modal-overlay">
         <div class="modal-card">
             <div class="modal-header">
                 <h3>Registrar Saída / Venda</h3>
                 <button id="btn-fechar-saida" class="btn-close">&times;</button>
             </div>
-            
             <form id="form-saida">
                 <div class="form-group">
                     <label for="sai-produto">Selecione o Produto</label>
-                    <select id="sai-produto" required>
-                        </select>
+                    <select id="sai-produto" required></select>
                 </div>
-
                 <div class="form-row">
                     <div class="form-group">
                         <label for="sai-qtd">Quantidade Retirada</label>
@@ -334,7 +285,6 @@
                         <input type="text" id="sai-info" placeholder="Ex: R$ 15,00 ou Consumo Interno" required>
                     </div>
                 </div>
-
                 <button type="submit" class="btn btn-danger" style="width: 100%; margin-top: 10px; padding: 12px;">Confirmar Saída</button>
             </form>
         </div>
@@ -342,6 +292,5 @@
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="main.js"></script>
-    
 </body>
 </html>

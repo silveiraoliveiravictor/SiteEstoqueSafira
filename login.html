@@ -35,37 +35,32 @@
     </div>
 
     <script>
-        function validarLogin(event) {
-    event.preventDefault();
+    function validarLogin(event) {
+        event.preventDefault();
 
-    const emailDigitado = document.getElementById('email').value;
-    const senhaDigitada = document.getElementById('senha').value;
-    const erro = document.getElementById('erro');
+        const emailDigitado = document.getElementById('email').value;
+        const senhaDigitada = document.getElementById('senha').value;
+        const erro = document.getElementById('erro');
 
-    const usuarioSalvo = JSON.parse(localStorage.getItem('usuarioCadastrado'));
+        // 1. Pega a lista completa de usuários que salvamos no cadastro
+        const listaUsuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
 
-    const ehUsuarioFixo = (emailDigitado === 'ana@cantina.com' && senhaDigitada === '123456');
-    const ehUsuarioCadastrado = (usuarioSalvo && emailDigitado === usuarioSalvo.email && senhaDigitada === usuarioSalvo.senha);
+        // 2. Procura na lista se existe alguém com o e-mail e a senha digitados
+        const usuarioEncontrado = listaUsuarios.find(u => u.email === emailDigitado && u.senha === senhaDigitada);
 
-    if (ehUsuarioFixo || ehUsuarioCadastrado) {
-        erro.style.display = 'none';
+        if (usuarioEncontrado) {
+            erro.style.display = 'none';
 
-        // Definindo os dados do usuário que acabou de entrar
-        let usuarioLogado = {};
-        if (ehUsuarioFixo) {
-            usuarioLogado = { nome: 'Ana Silva', email: 'ana@cantina.com', cargo: 'Administrador' };
+            // 3. Salva os dados de quem acabou de entrar na sessão ativa
+            sessionStorage.setItem('usuarioLogado', JSON.stringify(usuarioEncontrado));
+
+            // 4. Redireciona para o painel principal
+            window.location.href = 'index.html';
         } else {
-            usuarioLogado = usuarioSalvo; // Pega o nome e o cargo do localStorage
+            // Se não encontrar ninguém na lista, mostra o aviso vermelho na tela
+            erro.style.display = 'block';
         }
-
-        // Salva na SESSÃO (apaga ao fechar a aba)
-        sessionStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado));
-
-        window.location.href = 'index.html'; 
-    } else {
-        erro.style.display = 'block'; 
     }
-}
     </script>
 </body>
 </html>

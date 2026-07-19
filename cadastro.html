@@ -46,21 +46,34 @@
     </form>
 
     <script>
-        document.getElementById('cadastroForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            const nome = document.getElementById('nome').value;
-            const email = document.getElementById('email').value;
-            const cargo = document.getElementById('cargo').value;
-            const senha = document.getElementById('senha').value;
+    document.getElementById('cadastroForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const nome = document.getElementById('nome').value;
+        const email = document.getElementById('email').value;
+        const cargo = document.getElementById('cargo').value;
+        const senha = document.getElementById('senha').value;
 
-            const novoUsuario = { nome, email, cargo, senha };
-            
-            localStorage.setItem('usuarioCadastrado', JSON.stringify(novoUsuario));
+        // 1. Pega a lista de usuários já existente ou cria uma lista vazia se for o primeiro
+        let listaUsuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
 
-            alert('Usuário cadastrado com sucesso! Redirecionando para o login...');
-            window.location.href = 'login.html';
-        }); 
+        // 2. Evita cadastrar o mesmo e-mail duas vezes
+        const emailExiste = listaUsuarios.some(u => u.email.toLowerCase() === email.toLowerCase());
+        if (emailExiste) {
+            alert('Este e-mail já está cadastrado no sistema!');
+            return;
+        }
+
+        // 3. Cria o objeto do novo usuário e adiciona na lista
+        const novoUsuario = { nome, email, cargo, senha };
+        listaUsuarios.push(novoUsuario);
+        
+        // 4. Salva a lista completa e atualizada de volta no navegador
+        localStorage.setItem('usuarios', JSON.stringify(listaUsuarios));
+
+        alert('Usuário cadastrado com sucesso! Redirecionando para o login...');
+        window.location.href = 'login.html';
+    }); 
     </script>
 
 </body>
