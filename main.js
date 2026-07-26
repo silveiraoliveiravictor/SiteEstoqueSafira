@@ -131,12 +131,38 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById('btn-atualizar-senha').addEventListener('click', function() {
                 const s = document.getElementById('op-nova-senha').value;
                 const c = document.getElementById('op-confirma-senha').value;
-                if (!s || !c) { alert('Preencha ambos os campos.'); return; }
-                if (s !== c) { alert('As senhas não coincidem.'); return; }
-                alert('Senha alterada localmente com sucesso!');
-                document.getElementById('op-nova-senha').value = '';
-                document.getElementById('op-confirma-senha').value = '';
-            });
+
+                if (!s || !c) { 
+                    alert('Preencha ambos os campos.'); 
+                    return; 
+                }
+                if (s !== c) { 
+                    alert('As senhas não coincidem.'); 
+                    return; 
+                }
+
+                // 1. Atualiza a senha na sessão atual
+                usuarioLogado.senha = s;
+                sessionStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado));
+
+                // 2. Atualiza a senha na lista principal de usuários do localStorage (se houver)
+                let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+    
+                // Busca o usuário na lista pelo e-mail ou nome
+                const index = usuarios.findIndex(u => 
+                (u.email && u.email === usuarioLogado.email) || 
+                (u.nome && u.nome === usuarioLogado.nome)
+            );
+
+            if (index !== -1) {
+                usuarios[index].senha = s;
+                localStorage.setItem('usuarios', JSON.stringify(usuarios));
+            }
+
+            alert('Senha alterada localmente com sucesso!');
+            document.getElementById('op-nova-senha').value = '';
+            document.getElementById('op-confirma-senha').value = '';
+        });
         }
     }
 
