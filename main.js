@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function renderizarSistema() {
         const produtos = JSON.parse(localStorage.getItem('produtos')) || [];
         const movimentacoes = JSON.parse(localStorage.getItem('movimentacoes')) || [];
-        const configs = JSON.parse(localStorage.getItem('configuracoesSistema')) || { limiteDiasVencimento: 7 };
+        const configs = JSON.parse(localStorage.getItem('configuracoesSistema')) || { notificacoesCriticas: true, limiteDiasVencimento: 7 };
 
         // ---- RECALCULAR CARDS DO DASHBOARD ----
         let totalItens = 0;
@@ -204,13 +204,20 @@ document.addEventListener("DOMContentLoaded", function() {
             tbodyEstoque.innerHTML = '';
             produtos.forEach(p => {
                 let badgeClass = 'badge-ok'; let statusTexto = 'OK';
-                if (Number(p.qtd) === 0) { badgeClass = 'badge-critico'; statusTexto = 'Zerado'; }
-                else if (Number(p.qtd) < Number(p.minimo)) { badgeClass = 'badge-baixo'; statusTexto = 'Baixo'; }
+                const isEstoqueBaixo = Number(p.qtd) < Number(p.minimo);
 
-                const dataBr = p.validade.split('-').reverse().join('/');
+                if (Number(p.qtd) === 0) { badgeClass = 'badge-critico'; statusTexto = 'Zerado'; }
+                else if (isEstoqueBaixo) { badgeClass = 'badge-baixo'; statusTexto = 'Baixo'; }
+
+                // AJUSTE 1: Se a opção "Alertas de Estoque Crítico" estiver MARCADA, destaca a linha em vermelho leve
+                const estiloLinhaCritica = (configs.notificacoesCriticas && isEstoqueBaixo) 
+                    ? 'style="background-color: #fee2e2;"' 
+                    : '';
+
+                const dataBr = p.validade ? p.validade.split('-').reverse().join('/') : '-';
 
                 tbodyEstoque.innerHTML += `
-                    <tr>
+                    <tr ${estiloLinhaCritica}>
                         <td><strong>${p.nome}</strong></td>
                         <td>${p.categoria}</td>
                         <td>${p.qtd}</td>
@@ -430,10 +437,20 @@ document.addEventListener("DOMContentLoaded", function() {
     if (formEntrada) {
         formEntrada.addEventListener('submit', function(e) {
             e.preventDefault();
+
+            // AJUSTE 2: Busca as configurações salvas no localStorage
+            const configs = JSON.parse(localStorage.getItem('configuracoesSistema')) || {};
+            const nfDigitada = (document.getElementById('ent-nf').value || '').trim();
+
+            // REGRA DA NOTA FISCAL: Se exigirNF estiver ativo e o campo estiver vazio, bloqueia!
+            if (configs.exigirNF && !nfDigitada) {
+                alert('❌ Operação Bloqueada!\n\nAs diretrizes de segurança do sistema exigem o preenchimento do código da Nota Fiscal para registrar entradas.');
+                return;
+            }
+
             const produtos = JSON.parse(localStorage.getItem('produtos')) || [];
             const nomeProduto = selectEntProduto.value;
             const qtdEntrada = Number(document.getElementById('ent-qtd').value);
-            const nf = document.getElementById('ent-nf').value || "NF-Direta";
 
             const produto = produtos.find(p => p.nome === nomeProduto);
             if (!produto) return;
@@ -442,7 +459,14 @@ document.addEventListener("DOMContentLoaded", function() {
             localStorage.setItem('produtos', JSON.stringify(produtos));
 
             const movimentacoes = JSON.parse(localStorage.getItem('movimentacoes')) || [];
-            movimentacoes.push({ produto: produto.nome, tipo: 'Entrada', qtd: qtdEntrada, data: formatarData(new Date()), usuario: usuarioLogado.nome.split(' ')[0], infoExtra: nf });
+            movimentacoes.push({ 
+                produto: produto.nome, 
+                tipo: 'Entrada', 
+                qtd: qtdEntrada, 
+                data: formatarData(new Date()), 
+                usuario: usuarioLogado.nome.split(' ')[0], 
+                infoExtra: nfDigitada || "NF-Direta" 
+            });
             localStorage.setItem('movimentacoes', JSON.stringify(movimentacoes));
 
             formEntrada.reset();
