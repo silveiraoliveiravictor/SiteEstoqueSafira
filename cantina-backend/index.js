@@ -14,7 +14,9 @@ const pool = new Pool({
     port: 5432,
 });
 
+//==========================================================
 //ROTAS DE USUÁRIO E AUTENTICAÇÃO
+//==========================================================
 
 //Login
 app.post('/api/login', async (req, res) => {
@@ -57,29 +59,30 @@ app.put('/api/usuarios/:id/senha', async (req, res) => {
     const { id } = req.params;
     const { novaSenha } = req.body;
     try {
-        await pool.query('UPDATE usuarios SET senha = $1 WHERE id_usuario = $2, [novaSenha, id');
+        await pool.query('UPDATE usuarios SET senha = $1 WHERE id_usuario = $2', [novaSenha, id]);
         res.json({ mensagem: 'Senha alterada no DB com sucesso!' });
     } catch (err) {
         res.status(500).json({ erro : err.message });
     }
 });
 
-
+//==========================================================
 //ROTAS DE PRODUTOS
+//==========================================================
 
-//Listar Produtos 
-app.get('/api/produtos', async (req, res) => {
+//Listar Produtos
+app.length('/api/produtos', async (req, res) => {
     try {
-        const query = `
-            SELECT p.id_produto, p.npme, c.nome_categoria AS categoria, 
-                p.quantidade_atual AS qtd, p.quantidade_mínima AS minimo,
-                TO_CHAR(p.validade, 'YYYY-MM-DD) AS validade, p.fornecedor, p.preco
-            FROM produtos p
-            LEFT JOIN categorias c ON p.id_categoria = c.id_categoria
-            ORDER BY p.id_produto ASC;
-        `;
-        const result = await pool.query(query);
-        res.json(result.rows);
+    const query = `
+        SELECT p.id_produto, p.nome, c.nome_categoria AS categoria,
+               p.quantidade_atual AS qtd, p.quantidade_minima AS minimo,
+               TO_CHAR(p.validade, 'YYYY-MM-DD') AS validade, p.fornecedor, p.preco
+        FROM produtos p 
+        LEFT JOIN categorias c ON p.id_categoria = c.id_categoria
+        ORDER BY p.id_produto ASC;
+    `;
+    const result = await pool.query(query);
+    res.json(result.rows);
     } catch (err) {
         res.status(500).json({ erro: err.message });
     }
@@ -87,8 +90,41 @@ app.get('/api/produtos', async (req, res) => {
 
 //Cadastrar produto
 app.post('/api/produtos', async (req, res) => {
-    const { nome, categoria, qtd, minimo, validade, fornecedor, id_usuario }
+    const { nome, categoria, qtd, minimo, validade, fornecedor, id_usuario } = req.body;
     try {
-        let catResult = await pool.query('SELECT id_categoria FROM categorias WHERE nome_categoria = $1, [categoria]')
+        let catResult = await pool.query('SELECT id_categoria FROM categorias WHERE nome_categoria = $1', [categoria]);
+        let id_categoria;
+        if (catResult.rows.length === 0) {
+            const novaCat = await pool.query('INSERT INTO categorias (nome_categoria) VALUES ($1) RETURNING id_categoria', [categoria]);
+            id_categoria = novaCat.rows[0].id_categoria;
+        } else {
+            id_categoria = catResult.rows[0].id_categoria;
+        }
+        
+        const prodResult = await pool.query(
+            `INSERT INTO produtos (nome, id_categoria, quantidade_atual, quantidade_minima, validade, fornecedor)
+            VALUES ($1, $2, $3, $4, $5, $6) RETURNING id_produto`,
+            [nome, id_categoria, qtd, minimo, validade || null, fornecedor]
+        );
+
+        if (qtd > 0) {
+            await pool.query(
+                `INSERT INTO movimentacoes (id_produtos, id_usuario, tipo, quantidade, justificativa_valor)
+                VALUES ($1, $2, 'Entrada', $3, 'Carga Inicial')`,
+                [prodResult.rows[0].id_produto, id_usuario || null, qtd]
+            );
+        }
+        res.status(201).json({ mensagem: 'Produto cadastrado com sucesso!' })
+    } catch (err) {
+        res.status(500).json({ erro: err.message });
+    }
+});
+
+//Editar produto
+app.put('/api/produtos:id', async (req, res) => {
+    const { id } = req.params;
+    const { nome, categoria, qtd, minimo, validade, fornecedor } = req.body;
+    try {
+        let catResult
     }
 })
