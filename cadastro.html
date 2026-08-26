@@ -46,34 +46,33 @@
     </form>
 
     <script>
-    document.getElementById('cadastroForm').addEventListener('submit', function(event) {
+    document.getElementById('cadastroForm').addEventListener('submit', async function(event) {
         event.preventDefault();
-        
+
         const nome = document.getElementById('nome').value;
         const email = document.getElementById('email').value;
         const cargo = document.getElementById('cargo').value;
         const senha = document.getElementById('senha').value;
 
-        // 1. Pega a lista de usuários já existente ou cria uma lista vazia se for o primeiro
-        let listaUsuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+        try{
+            const resposta = await fetch('http://localhost:3000/api/usuarios', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, email, cargo, senha })
+            });
 
-        // 2. Evita cadastrar o mesmo e-mail duas vezes
-        const emailExiste = listaUsuarios.some(u => u.email.toLowerCase() === email.toLowerCase());
-        if (emailExiste) {
-            alert('Este e-mail já está cadastrado no sistema!');
-            return;
+            const dados = await resposta.json();
+
+            if (resposta.ok) {
+                alert('Usuário cadastrado com sucesso! Redirecionando...');
+                window.location.href = 'login.html';
+            } else {
+                alert(dados.mensagem || 'Erro ao realizar cadastro.');
+            }
+        } catch {
+            alert('Erro ao conectar com o servidor backend.');
         }
-
-        // 3. Cria o objeto do novo usuário e adiciona na lista
-        const novoUsuario = { nome, email, cargo, senha };
-        listaUsuarios.push(novoUsuario);
-        
-        // 4. Salva a lista completa e atualizada de volta no navegador
-        localStorage.setItem('usuarios', JSON.stringify(listaUsuarios));
-
-        alert('Usuário cadastrado com sucesso! Redirecionando para o login...');
-        window.location.href = 'login.html';
-    }); 
+    });
     </script>
 
 </body>

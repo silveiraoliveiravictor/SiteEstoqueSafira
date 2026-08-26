@@ -35,30 +35,32 @@
     </div>
 
     <script>
-    function validarLogin(event) {
+    async function validarLogin(event) {
         event.preventDefault();
 
-        const emailDigitado = document.getElementById('email').value;
-        const senhaDigitada = document.getElementById('senha').value;
+        const email = document.getElementById('email').value;
+        const senha = document.getElementById('senha');
         const erro = document.getElementById('erro');
 
-        // 1. Pega a lista completa de usuários que salvamos no cadastro
-        const listaUsuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+        try {
+            const resposta = await fetch('http://localhost:3000/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, senha })
+            });
 
-        // 2. Procura na lista se existe alguém com o e-mail e a senha digitados
-        const usuarioEncontrado = listaUsuarios.find(u => u.email === emailDigitado && u.senha === senhaDigitada);
+            const dados = await resposta.json();
 
-        if (usuarioEncontrado) {
-            erro.style.display = 'none';
-
-            // 3. Salva os dados de quem acabou de entrar na sessão ativa
-            sessionStorage.setItem('usuarioLogado', JSON.stringify(usuarioEncontrado));
-
-            // 4. Redireciona para o painel principal
-            window.location.href = 'index.html';
-        } else {
-            // Se não encontrar ninguém na lista, mostra o aviso vermelho na tela
-            erro.style.display = 'block';
+            if (resposta.ok && dados.sucesso) {
+                erro.style.display = 'none';
+                sessionStorage.setItem('usuarioLogado', JSON.stringify(dados.usuario));
+                window.location.href = 'index.html';
+            } else {
+                erro.textContent = dados.mensagem || 'E-mail ou senha incorretos!';
+                erro.style.display = 'block';
+            }
+        } catch (err) {
+            alert('Erro ao conectar com o servidor backend.')
         }
     }
     </script>
