@@ -171,6 +171,7 @@ app.get('/api/movimentacoes', async (req, res) => {
             FROM movimentacoes m
             JOIN produtos p ON m.id_produto = p.id_produto
             LEFT JOIN usuarios u ON m.id_usuario = u.id_usuario
+            WHERE m.data_hora >= DATE_TRUNC('week', CURRENT_DATE) -- Reseta visualmente na segunda-feira
             ORDER BY m.data_hora ASC;
         `;
         const result = await pool.query(query);
