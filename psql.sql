@@ -47,8 +47,8 @@ CREATE TABLE produtos (
     quantidade_atual INT NOT NULL DEFAULT 0 CHECK (quantidade_atual >= 0),
     quantidade_minima INT NOT NULL DEFAULT 10 CHECK (quantidade_minima >= 0),
     preco DECIMAL(10, 2) DEFAULT 0.00,
-    validade DATE
-    fornecedor VARCHAR(100);
+    validade DATE,
+    fornecedor VARCHAR(100)
 );
 
 
