@@ -9,12 +9,13 @@ app.use(cors());
 require('dotenv').config();
 
 const pool = new Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT,
+   connectionString: process.env.DATABASE_URL,
+   ssl: {
+    rejectUnauthorized: false
+   }
 });
+console.log('DATABASE_URL carregada?', !!process.env.DATABASE_URL);
+
 
 // ==========================================
 // ROTAS DE USUÁRIOS E AUTENTICAÇÃO
@@ -23,6 +24,7 @@ const pool = new Pool({
 // Login
 app.post('/api/login', async (req, res) => {
     const { email, senha } = req.body;
+    
     try {
         const result = await pool.query(
             'SELECT id_usuario, nome, email, cargo FROM usuarios WHERE email = $1 AND senha = $2',

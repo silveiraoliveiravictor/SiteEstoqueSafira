@@ -220,14 +220,75 @@ document.addEventListener("DOMContentLoaded", async function() {
             }
 
             // ---- GRÁFICOS ----
+
+            //==========================================
+            //GRÁFICO 1: NÍVEIS ATUAIS DE ESTOQUE
+            //==========================================
             const ctxEstoque = document.getElementById('graficoEstoque');
             if (ctxEstoque) {
                 if (meuGrafico) meuGrafico.destroy();
                 meuGrafico = new Chart(ctxEstoque, {
                     type: 'bar',
-                    data: { labels: produtos.map(p => p.nome), datasets: [{ label: 'Qtd Estoque', data: produtos.map(p => Number(p.qtd)), backgroundColor: '#1e3a8a' }] },
-                    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false }
+                    data: { 
+                        labels: produtos.map(p => p.nome), 
+                        datasets: [{ 
+                            label: 'Qtd Estoque', 
+                            data: produtos.map(p => Number(p.qtd)), 
+                            backgroundColor: '#1e3a8a' 
+                        }] 
+                    },
+                    options: { 
+                        indexAxis: 'y', 
+                        responsive: true, 
+                        maintainAspectRatio: false 
+                    }
                 });
+            }
+
+            //==========================================
+            //GRÁFICO 2: MOVIMENTAÇÃO SEMANAL DE SAÍDAS
+            //==========================================
+            const ctxSemanal = document.getElementById('graficoSemanalSaidas');
+            if (ctxSemanal) {
+                if (graficoSemanal) graficoSemanal.destroy();
+                const saidas = movimentacoes.filter(m => m.tipo === 'Saída');
+                const saidasPorDia = {};
+                saidas.forEach(m => {
+                    const dia = m.data.substring(0, 10);
+
+                    if (!saidasPorDia[dia]) {
+                        saidasPorDia[dia] = 0;
+                    }
+                    saidasPorDia[dia] += Number(m.qtd);
+                });
+                const labels = Object.keys(saidasPorDia);
+                const dados = Object.values(saidasPorDia);
+
+                graficoSemanal = new Chart(ctxSemanal, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Quantidade de Saídas',
+                            data: dados,
+                            backgroundColor: '#dc2626'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                }
+                            }
+                        }
+                    }
+                });
+
             }
         } catch (err) {
             console.error('Erro ao carregar dados do backend:', err);
