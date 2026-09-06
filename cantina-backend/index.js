@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
@@ -6,15 +8,26 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-require('dotenv').config();
-
 const pool = new Pool({
    connectionString: process.env.DATABASE_URL,
-   ssl: {
+   ssl: { 
     rejectUnauthorized: false
    }
+}); 
+pool.on('error', (err, client) => {
+    console.error('Erro inesperado no banco de dados:', err);
 });
 console.log('DATABASE_URL carregada?', !!process.env.DATABASE_URL);
+
+pool.query('SELECT NOW()')
+    .then(resultado => {
+        console.log('BANCO CONECTADO COM SUCESSO!');
+        console.log(resultado.rows);
+    })
+    .catch(erro => {
+        console.error('ERRO AO CONECTAR AO BANCO:', erro);
+    });
+
 
 
 // ==========================================

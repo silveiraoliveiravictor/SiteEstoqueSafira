@@ -161,11 +161,20 @@ document.addEventListener("DOMContentLoaded", async function() {
                 produtos.forEach(p => {
                     let badgeClass = 'badge-ok'; let statusTexto = 'OK';
                     const isEstoqueBaixo = Number(p.qtd) < Number(p.minimo);
+                    const isZerado = Number(p.qtd) === 0;
 
-                    if (Number(p.qtd) === 0) { badgeClass = 'badge-critico'; statusTexto = 'Zerado'; }
-                    else if (isEstoqueBaixo) { badgeClass = 'badge-baixo'; statusTexto = 'Baixo'; }
+                    if(isZerado) {
+                        badgeClass = 'badge-critico';
+                        statusTexto = 'Zerado';
+                    } else if(isEstoqueBaixo) {
+                        badgeClass = 'badge-baixo'; 
+                        statusTexto = 'Baixo';
+                    }
 
-                    const estiloLinhaCritica = (configs.notificacoesCriticas && isEstoqueBaixo) ? 'style="background-color: #fee2e2;"' : '';
+                    const ativarAlertaVermelho = configs.notificacoesCriticas && (isEstoqueBaixo || isZerado);
+                    const estiloLinhaCritica = ativarAlertaVermelho 
+                        ? 'style="background-color: #fef2f2; color: #991b1b; font-weight: 500;"' 
+                        : '';
                     const dataBr = p.validade ? p.validade.split('-').reverse().join('/') : '-';
 
                     tbodyEstoque.innerHTML += `
@@ -407,6 +416,18 @@ document.addEventListener("DOMContentLoaded", async function() {
         const id_produto = document.getElementById('ent-produto').value;
         const quantidade = Number(document.getElementById('ent-qtd').value);
         const nota_fiscal = document.getElementById('ent-nf').value;
+
+        try {
+            const resCfg = await fetch(`${API_URL}/configuracoes`);
+            const configs = await resCfg.json();
+
+            if (configs.exigirNF && !nota_fiscal.trim()) {
+                alert('Ação bloqueada: O Administrador configurou que a Nota Fiscal é obrigatória para registrar entradas.');
+                return;
+            }
+        } catch (err) {
+            console.error('Erro ao checar a configuração de NF:', err);
+        }
 
         const res = await fetch(`${API_URL}/movimentacoes/entrada`, {
             method: 'POST',
